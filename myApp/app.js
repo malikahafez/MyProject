@@ -26,55 +26,66 @@ app.use(express.static(path.join(__dirname, 'public')));//setting folder for sta
 //   console.log(x);
 //   console.log(y);
 // });
-
+//show login page when localhost:3000 is in browser
 app.get('/',function(req,res){
   res.render('login')
 });
-
+//go to registration page after clicking 'I dont have an account'
 app.get('/registration', function(req,res){
   res.render('registration')
 });
-
+//redirect to login page after registering by clicking 'register'
 app.post('/register', function(req,res){
+  res.redirect('login')
+});
+//handle request for login page after redirection from registration page
+app.get('/login', function(req,res){
   res.render('login')
 });
 
+//go to home page after logging in by clicking 'login'
 app.post('/', function(req, res){
   res.render('home')
 });
 
+//go to wanttogo list after clicking button 'want to go list'
+app.get('/wanttogo', function(req,res){
+  res.render('wanttogo')
+});
+
+//go to islands page after clicking button 'view'
 app.get('/islands', function(req,res){
   res.render('islands')
 });
-
+//go to bali page after clicking 'view'
 app.get('/bali', function(req,res){
   res.render('bali')
 });
-
+//go to santorini page after clicking 'view'
 app.get('/santorini', function(req,res){
   res.render('santorini')
 });
-
+//go to cities page after clicking 'view'
 app.get('/cities', function(req,res){
   res.render('cities')
 });
-
+//go to paris page after clicking 'view'
 app.get('/paris', function(req, res){
   res.render('paris')
 });
-
+//go to rome page after clicking 'view'
 app.get('/rome', function(req, res){
   res.render('rome')
 });
-
+//go to hiking page after clicking 'view'
 app.get('/hiking', function(req,res){
   res.render('hiking')
 });
-
+//go to inca page after clicking 'view'
 app.get('/inca', function(req,res){
   res.render('inca')
 });
-
+//go to annapurna page after clicking 'view'
 app.get('/annapurna', function(req,res){
   res.render('annapurna')
 });
