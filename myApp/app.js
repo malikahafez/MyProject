@@ -43,8 +43,12 @@ app.get('/login', function(req,res){
   res.render('login')
 });
 
-//go to home page after logging in by clicking 'login'
+//go to homepage after logging in by clicking 'login'
 app.post('/', function(req, res){
+  res.render('home')
+});
+//go to homepage after logging in after registering
+app.post('/login',function(req, res){
   res.render('home')
 });
 
