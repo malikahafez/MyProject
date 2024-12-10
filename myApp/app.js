@@ -35,6 +35,10 @@ app.get('/registration', function(req,res){
   res.render('registration')
 });
 
+app.post('/register', function(req,res){
+  res.render('login')
+});
+
 app.post('/', function(req, res){
   res.render('home')
 });
