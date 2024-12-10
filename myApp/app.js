@@ -93,6 +93,9 @@ app.get('/inca', function(req,res){
 app.get('/annapurna', function(req,res){
   res.render('annapurna')
 });
+app.post('/search', function(req,res){
+  res.render('searchresults')
+});
 
 
 app.listen(3000);//port number 3000 for the website
