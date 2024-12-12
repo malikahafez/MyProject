@@ -117,5 +117,17 @@ console.log(x);//print x as an object can't write this into a file
 console.log(y);//print x in JSON format (one big string) can write this into a file
 console.log(z);//print the parsed data as an object again
 //console.log(x.name);//print to console
+
+//mongoDB connection to database
+const { MongoClient } = require('mongodb');
+const client = new MongoClient("mongodb://127.0.0.1:27017");
+client.connect();
+const db = client.db('MyDB');
+db.collection('myCollection').insertOne({username: "test", password: "test"});
+ 
+//access
+db.collection('myCollection').find().toArray(function(err,results){
+  console.log(results)
+});
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000
