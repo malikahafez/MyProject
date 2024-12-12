@@ -126,8 +126,12 @@ const db = client.db('MyDB');
 db.collection('myCollection').insertOne({username: "test", password: "test"});
  
 //access
-db.collection('myCollection').find().toArray(function(err,results){
-  console.log(results)
-});
+// db.collection('myCollection').find().toArray(function(err,results){
+//   console.log(results)
+// });
+db.collection('myCollection').findOne({username: "test"}).then(result => {
+  console.log(result.username)
+  }); 
+
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000
