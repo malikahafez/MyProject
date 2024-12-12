@@ -97,7 +97,25 @@ app.get('/annapurna', function(req,res){
 app.post('/search', function(req,res){
   res.render('searchresults')
 });
+//javascript object notation(json)
+//var var_name = {variable:value, variable:value};
+//object can have multiple data types within it
+var x = {name:"Ali", age:27, username:"ali92", password:"abc123"};//javascript object
+var y = JSON.stringify(x);//x turned into string in JSON format
+
+//write y into a file (users.json) using fs module
+fs.writeFileSync("users.json",y);
+
+//read from file
+var data = fs.readFileSync("users.json");
+
+//turn string back into object by parsing data variable
+var z = JSON.parse(data);
 
 
+console.log(x);//print x as an object can't write this into a file
+console.log(y);//print x in JSON format (one big string) can write this into a file
+console.log(z);//print the parsed data as an object again
+//console.log(x.name);//print to console
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000
