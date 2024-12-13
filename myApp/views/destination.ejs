@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= name %> Page</title>
+</head>
+<body>
+  <h1>Welcome to <%= name %>!</h1>
+  <p><%= description %></p>
+
+  <!-- Embedded Video -->
+  <h3>Watch this video:</h3>
+  <% if (videoLink) { %>
+    <iframe 
+      width="560" 
+      height="315" 
+      src="<%= videoLink %>" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen>
+    </iframe>
+  <% } else { %>
+    <p>Video not available for this destination.</p>
+  <% } %>
+
+  <!-- Add to Want-to-Go List -->
+  <form action="/destination/add" method="POST">
+    <input type="hidden" name="destination" value="<%= name %>">
+    <button type="submit">Add to Want-to-Go List</button>
+  </form>
+
+  <!-- Display All Destinations with Videos -->
+  <hr>
+  <h2>Other Destinations</h2>
+
+  <!-- Santorini -->
+  <h3>Santorini - Beautiful island in Greece</h3>
+  <iframe 
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/UO6HZLdN-Ls" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+
+  <!-- Rome -->
+  <h3>Rome - The capital of Italy, full of history</h3>
+  <iframe 
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/5DcA4BePBdA" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+
+  <!-- Paris -->
+  <h3>Paris - City of Love in France</h3>
+  <iframe 
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/GljTvdEDqJM" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+
+  <!-- Bali -->
+  <h3>Bali - A tropical paradise with stunning beaches and culture</h3>
+  <iframe 
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/CBwKJfrm5-U" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+
+  <!-- Back to Home -->
+  <br>
+  <a href="/home">Back to Home</a>
+</body>
+</html>
