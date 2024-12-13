@@ -119,8 +119,17 @@ const destinations = {
   bali: { 
     description: "A tropical paradise with stunning beaches and culture.", 
     video: "https://www.youtube.com/embed/CBwKJfrm5-U" 
+  },
+  annapurna: {
+    description: "A scenic city in Nepal.",
+    video: "https://www.youtube.com/embed/y9sJIOetf4g"
+  },
+  inca: {
+    description: "Discover the ancient city.",
+    video: "https://www.youtube.com/embed/N50PhJ4Pr1Q"
   }
 };
+
 
 
   // Check if destination exists
