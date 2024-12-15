@@ -94,9 +94,9 @@ app.get('/inca', function(req,res){
 app.get('/annapurna', function(req,res){
   res.render('annapurna')
 });
-app.post('/search', function(req,res){
-  res.render('searchresults')
-});
+// app.post('/search', function(req,res){
+//   res.render('searchresults')
+// });
 //javascript object notation(json)
 //var var_name = {variable:value, variable:value};
 //object can have multiple data types within it
@@ -120,6 +120,7 @@ console.log(z);//print the parsed data as an object again
 
 //mongoDB connection to database
 const { MongoClient } = require('mongodb');
+const { name } = require('ejs');
 const client = new MongoClient("mongodb://127.0.0.1:27017");
 client.connect();
 const db = client.db('MyDB');
@@ -225,6 +226,37 @@ const destinations = {
     video: "https://www.youtube.com/embed/CBwKJfrm5-U"
   }
 };
+
+const availableLocations = [{ id: 1, name: "santorini" },
+{ id: 2, name: "bali" },
+{ id: 3, name: "paris" },
+{ id: 4, name: "rome" },
+{ id: 5, name: "annapurna" },
+{ id: 6, name: "inca" },
+
+];
+
+// Lookup Route
+app.post("/search", (req, res) => {
+ 
+  const searchTerm = req.body.Search;
+  console.log(searchTerm);
+  try {
+    // Execute a case-insensitive lookup in the availableLocations array
+    const filteredLocations = availableLocations.filter((location) =>
+      location.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    res.render("searchresults", {
+      message: filteredLocations.length > 0 ? null : "No matching locations found",
+      locations: filteredLocations,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+  
+});
 
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000
