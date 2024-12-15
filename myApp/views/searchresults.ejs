@@ -47,7 +47,11 @@
     
       <ul>
         <% locations.forEach(function(location) { %>
-          <li style="color:white"><%= location.name %></li>
+          <li style="color:white">
+            <a href="/<%=location.name%>">
+            <%= location.name %>
+        </a>
+        </li>
         <% }); %>
       </ul>
 </body>
