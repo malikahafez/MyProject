@@ -133,5 +133,98 @@ db.collection('myCollection').findOne({username: "test"}).then(result => {
   console.log(result.username)
   }); 
 
+// GET route for destination pages
+app.get('/destination/:name', async (req, res) => {
+  const destinationName = req.params.name;
+
+  // Example video links and descriptions for each destination
+const destinations = {
+  santorini: { 
+    description: "Beautiful island in Greece.", 
+    video: "https://www.youtube.com/embed/UO6HZLdN-Ls" 
+  },
+  rome: { 
+    description: "The capital of Italy, full of history.", 
+    video: "https://www.youtube.com/embed/5DcA4BePBdA" 
+  },
+  paris: { 
+    description: "City of Love in France.", 
+    video: "https://www.youtube.com/embed/GljTvdEDqJM" 
+  },
+  bali: { 
+    description: "A tropical paradise with stunning beaches and culture.", 
+    video: "https://www.youtube.com/embed/CBwKJfrm5-U" 
+  },
+  annapurna: {
+    description: "A scenic city in Nepal.",
+    video: "https://www.youtube.com/embed/y9sJIOetf4g"
+  },
+  inca: {
+    description: "Discover the ancient city.",
+    video: "https://www.youtube.com/embed/N50PhJ4Pr1Q"
+  }
+};
+
+
+
+  // Check if destination exists
+  if (destinations[destinationName]) {
+    res.render('destination', { 
+      name: destinationName, 
+      description: destinations[destinationName].description, 
+      videoLink: destinations[destinationName].video 
+    });
+  } else {
+    res.status(404).send("Destination not found");
+  }
+});
+
+// POST route to add a destination to "Want-to-Go List"
+app.post('/destination/add', async (req, res) => {
+  const { destination } = req.body;
+
+  try {
+    // Check if the destination already exists in the user's list
+    const existing = await usersCollection.findOne({
+      username: currentUser.username, 
+      wantToGoList: destination
+    });
+
+    if (existing) {
+      res.send("Destination already in your Want-to-Go List!");
+    } else {
+      // Add destination to the user's list
+      await usersCollection.updateOne(
+        { username: currentUser.username },
+        { $push: { wantToGoList: destination } },
+        { upsert: true }
+      );
+      res.send("Destination added successfully!");
+    }
+  } catch (err) {
+    res.status(500).send("Error adding to the Want-to-Go List.");
+  }
+});
+
+
+const destinations = {
+  santorini: { 
+    description: "Beautiful island in Greece.", 
+    video: "https://www.youtube.com/embed/UO6HZLdN-Ls" 
+  },
+  rome: { 
+    description: "The capital of Italy, full of history.", 
+    video: "https://www.youtube.com/embed/5DcA4BePBdA" 
+  },
+  paris: { 
+    description: "City of Love in France.", 
+    video: "https://www.youtube.com/embed/GljTvdEDqJM" 
+  },
+  bali: {
+    description: "A tropical paradise with stunning beaches and culture.", 
+    video: "https://www.youtube.com/embed/CBwKJfrm5-U"
+  }
+};
+
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000
