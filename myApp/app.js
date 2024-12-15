@@ -227,12 +227,12 @@ const destinations = {
   }
 };
 
-const availableLocations = [{ id: 1, name: "Santorini" },
-{ id: 2, name: "Bali" },
-{ id: 3, name: "Paris" },
-{ id: 4, name: "Rome" },
-{ id: 5, name: "Annapurna" },
-{ id: 6, name: "Inca" },
+const availableLocations = [{ id: 1, name: "santorini" },
+{ id: 2, name: "bali" },
+{ id: 3, name: "paris" },
+{ id: 4, name: "rome" },
+{ id: 5, name: "annapurna" },
+{ id: 6, name: "inca" },
 
 ];
 
@@ -257,5 +257,6 @@ app.post("/search", (req, res) => {
   }
   
 });
+
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000

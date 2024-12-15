@@ -13,6 +13,7 @@
             text-align: center;
             -webkit-text-stroke: 1px blue;
         }
+
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,5 +39,16 @@
             </form>
         </div>
     </nav>
+    <% if (message) { %>
+        <div class="alert alert-info" style="color:black">
+          <%= message %>
+        </div>
+      <% } %>
+    
+      <ul>
+        <% locations.forEach(function(location) { %>
+          <li style="color:white"><%= location.name %></li>
+        <% }); %>
+      </ul>
 </body>
 </html>
