@@ -77,8 +77,12 @@
         With its stunning turquoise waters and picturesque villages, great activities including wine-tasting, authentic Greek cuisine, regular boat excursions due to its ideal location for island hopping, small Greek island of Santorini became so popular as a holiday destination.
     </div>
     <div class="wanttogo">
-        <button id="wanttogo" class="btn btn-secondary ml-3">Add to Want-to-Go List</button>
+        <form action="/destination/add" method="POST">
+            <input type="hidden" name="destination" value="Santorini">
+            <button type="submit" id="wanttogo" class="btn btn-secondary ml-3">Add to Want-to-Go List</button>
+        </form>
     </div>
+    
     <div class="video">
         <iframe width="560" height="315" src="https://www.youtube.com/embed/UO6HZLdN-Ls?si=zgTgZZIx_ugZcHgI" 
         title="YouTube video player" frameborder="0" 
