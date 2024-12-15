@@ -125,6 +125,10 @@ const client = new MongoClient("mongodb://127.0.0.1:27017");
 client.connect();
 const db = client.db('MyDB');
 db.collection('myCollection').insertOne({username: "test", password: "test"});
+db.collection('myCollection').insertOne({username: "ali1919", password: "abc123"});
+var l = {username: "ali1919", password: "abc123"};
+var m = JSON.stringify(l);
+fs.writeFileSync("users.json",m);
  
 //access
 // db.collection('myCollection').find().toArray(function(err,results){
@@ -203,6 +207,7 @@ app.post('/destination/add', async (req, res) => {
       res.send("Destination added successfully!");
     }
   } catch (err) {
+    console.error(err.message);
     res.status(500).send("Error adding to the Want-to-Go List.");
   }
 });
