@@ -129,8 +129,9 @@ app.post('/destination/add', (req, res) => {
 
 // Route to render the Want-to-Go List
 app.get('/wanttogo', (req, res) => {
-  res.render('wanttogo', { list: wantToGoList });
+  res.render('wanttogo', { list: wantToGoList }); // Ensure 'list' is passed
 });
+
 
 // GET route for destination pages
 app.get('/destination/:name', async (req, res) => {
