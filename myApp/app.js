@@ -248,7 +248,7 @@ app.post("/search", (req, res) => {
     );
 
     res.render("searchresults", {
-      message: filteredLocations.length > 0 ? null : "No matching locations found",
+      message: filteredLocations.length > 0 ? null : "No matching destinations found",
       locations: filteredLocations,
     });
   } catch (error) {
