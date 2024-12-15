@@ -2,6 +2,8 @@ var express = require('express');
 var path = require('path');
 var fs = require('fs');
 var app = express(); // Initiation of the express server
+// In-memory Want-to-Go List
+let wantToGoList = [];
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -63,22 +65,23 @@ db.collection('myCollection').findOne({ username: "test" }).then(result => {
     console.log(result.username);
 });
 
-// In-memory Want-to-Go List
-let wantToGoList = [];
+
+
 
 // Route to add a destination to the Want-to-Go List
 app.post('/destination/add', (req, res) => {
-    const { destination } = req.body;
+  const { destination } = req.body;
 
-    if (!wantToGoList.includes(destination)) {
-        wantToGoList.push(destination);
-    }
-    res.redirect('/wanttogo');
+  // Avoid duplicates
+  if (!wantToGoList.includes(destination)) {
+      wantToGoList.push(destination);
+  }
+  res.redirect('/wanttogo');
 });
 
 // Route to render the Want-to-Go List
 app.get('/wanttogo', (req, res) => {
-    res.render('wanttogo', { list: wantToGoList });
+  res.render('wanttogo', { list: wantToGoList });
 });
 
 // GET route for destination pages
