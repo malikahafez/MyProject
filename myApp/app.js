@@ -203,6 +203,7 @@ app.post('/destination/add', async (req, res) => {
       res.send("Destination added successfully!");
     }
   } catch (err) {
+    console.error(err.message);
     res.status(500).send("Error adding to the Want-to-Go List.");
   }
 });
