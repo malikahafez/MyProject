@@ -1,5 +1,6 @@
 
 var express = require('express');
+const session = require('express-session');
 var path = require('path');
 var fs = require('fs');
 var app = express();//initiation of the express server
@@ -11,7 +12,12 @@ app.set('view engine', 'ejs');//tell engine to handle the views as ejs files not
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));//setting folder for static files(videos, images, ...)
-
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
 
 // app.get('/',function(req, res){
 //   res.render('index', {title: "express"})
@@ -52,6 +58,7 @@ app.post('/', async function(req, res) {
 
     if (user) {
       console.log('Login successful for:', username);
+      req.session.userId = user.username;
       res.redirect('/home'); // Redirect to the home page
     } else {
       console.log('Invalid credentials for:', username);
@@ -62,8 +69,10 @@ app.post('/', async function(req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
+
 app.get('/home', function(req,res){
-  res.render('home')
+  res.render('home');
+  console.log(req.session.userId);
 });
 app.post('/register', async function(req, res) {
   var username = req.body.username;
