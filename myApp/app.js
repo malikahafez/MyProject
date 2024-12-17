@@ -1,41 +1,30 @@
-
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
-var app = express();//initiation of the express server
+var app = express(); // Initiation of the express server
+// In-memory Want-to-Go List
+let wantToGoList = [];
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));//tell server that all the html files will be in the views folder in the directory of MyProject
-app.set('view engine', 'ejs');//tell engine to handle the views as ejs files not only html
+// View engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));//setting folder for static files(videos, images, ...)
+app.use(express.static(path.join(__dirname, 'public')));
 
-
-// app.get('/',function(req, res){
-//   res.render('index', {title: "express"})
-// });
-
-// app.get('/pizza',function(req,res){
-//   res.render('pizzaPage',{ppp:"pizza"})
-// });
-
-// app.post('/pizza',function(req,res){
-//   var x = req.body.user;
-//   var y = req.body.pass;
-//   console.log(x);
-//   console.log(y);
-// });
-//show login page when localhost:3000 is in browser
-app.get('/',function(req,res){
-  res.render('login')
-});
-//go to registration page after clicking 'I dont have an account'
-app.get('/registration', function(req,res){
-  res.render('registration')
+// Show login page when localhost:3000 is in browser
+app.get('/', function (req, res) {
+    res.render('login');
 });
 
+// Go to registration page after clicking 'I don't have an account'
+app.get('/registration', function (req, res) {
+    res.render('registration');
+});
+
+
+=======
 //handle request for login page after redirection from registration page
 app.get('/login', function(req,res){
   res.render('login')
@@ -61,6 +50,7 @@ app.post('/', async function(req, res) {
     console.error('Error while logging in:', err);
     res.status(500).send('Internal Server Error');
   }
+
 });
 app.get('/home', function(req,res){
   res.render('home')
@@ -154,9 +144,9 @@ app.get('/inca', function(req,res){
 app.get('/annapurna', function(req,res){
   res.render('annapurna')
 });
-// app.post('/search', function(req,res){
-//   res.render('searchresults')
-// });
+app.post('/search', function(req,res){
+  res.render('searchresults')
+});
 //javascript object notation(json)
 //var var_name = {variable:value, variable:value};
 //object can have multiple data types within it
@@ -166,12 +156,14 @@ var y = JSON.stringify(x);//x turned into string in JSON format
 //write y into a file (users.json) using fs module
 fs.writeFileSync("users.json",y);
 
-//read from file
 var data = fs.readFileSync("users.json");
-
-//turn string back into object by parsing data variable
 var z = JSON.parse(data);
+console.log(x);
+console.log(y);
+console.log(z);
 
+
+=======
 
 console.log(x);//print x as an object can't write this into a file
 //console.log(x.name);//print to console
@@ -211,50 +203,71 @@ customerCollection.insertMany([
   //console.log(result.username)
   //}); 
 
+
+db.collection('myCollection').findOne({ username: "test" }).then(result => {
+    console.log(result.username);
+});
+
+
+
+
+// Route to add a destination to the Want-to-Go List
+app.post('/destination/add', (req, res) => {
+  const { destination } = req.body;
+
+  // Avoid duplicates
+  if (!wantToGoList.includes(destination)) {
+      wantToGoList.push(destination);
+  }
+  res.redirect('/wanttogo');
+});
+
+// Route to render the Want-to-Go List
+app.get('/wanttogo', (req, res) => {
+  res.render('wanttogo', { list: wantToGoList }); // Ensure 'list' is passed
+});
+
+
 // GET route for destination pages
 app.get('/destination/:name', async (req, res) => {
-  const destinationName = req.params.name;
+    const destinationName = req.params.name;
 
-  // Example video links and descriptions for each destination
-const destinations = {
-  santorini: { 
-    description: "Beautiful island in Greece.", 
-    video: "https://www.youtube.com/embed/UO6HZLdN-Ls" 
-  },
-  rome: { 
-    description: "The capital of Italy, full of history.", 
-    video: "https://www.youtube.com/embed/5DcA4BePBdA" 
-  },
-  paris: { 
-    description: "City of Love in France.", 
-    video: "https://www.youtube.com/embed/GljTvdEDqJM" 
-  },
-  bali: { 
-    description: "A tropical paradise with stunning beaches and culture.", 
-    video: "https://www.youtube.com/embed/CBwKJfrm5-U" 
-  },
-  annapurna: {
-    description: "A scenic city in Nepal.",
-    video: "https://www.youtube.com/embed/y9sJIOetf4g"
-  },
-  inca: {
-    description: "Discover the ancient city.",
-    video: "https://www.youtube.com/embed/N50PhJ4Pr1Q"
-  }
-};
+    const destinations = {
+        santorini: {
+            description: "Beautiful island in Greece.",
+            video: "https://www.youtube.com/embed/UO6HZLdN-Ls"
+        },
+        rome: {
+            description: "The capital of Italy, full of history.",
+            video: "https://www.youtube.com/embed/5DcA4BePBdA"
+        },
+        paris: {
+            description: "City of Love in France.",
+            video: "https://www.youtube.com/embed/GljTvdEDqJM"
+        },
+        bali: {
+            description: "A tropical paradise with stunning beaches and culture.",
+            video: "https://www.youtube.com/embed/CBwKJfrm5-U"
+        },
+        annapurna: {
+            description: "A scenic city in Nepal.",
+            video: "https://www.youtube.com/embed/y9sJIOetf4g"
+        },
+        inca: {
+            description: "Discover the ancient city.",
+            video: "https://www.youtube.com/embed/N50PhJ4Pr1Q"
+        }
+    };
 
-
-
-  // Check if destination exists
-  if (destinations[destinationName]) {
-    res.render('destination', { 
-      name: destinationName, 
-      description: destinations[destinationName].description, 
-      videoLink: destinations[destinationName].video 
-    });
-  } else {
-    res.status(404).send("Destination not found");
-  }
+    if (destinations[destinationName]) {
+        res.render('destination', {
+            name: destinationName,
+            description: destinations[destinationName].description,
+            videoLink: destinations[destinationName].video
+        });
+    } else {
+        res.status(404).send("Destination not found");
+    }
 });
 
 // POST route to add a destination to "Want-to-Go List"
@@ -305,6 +318,8 @@ const destinations = {
   }
 };
 
+
+=======
 const availableLocations = [{ id: 1, name: "santorini" },
 { id: 2, name: "bali" },
 { id: 3, name: "paris" },
