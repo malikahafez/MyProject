@@ -80,7 +80,7 @@ app.post('/register', async function(req, res) {
       // Insert the new user into the database
       await customerCollection.insertOne({ username: username, password: password });
       console.log('Registration successful for:', username);
-      res.redirect('/home'); // Redirect back to login page after successful registration
+      res.redirect('/'); // Redirect back to login page after successful registration
     }
   } catch (err) {
     console.error('Error while registering:', err);
