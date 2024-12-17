@@ -35,23 +35,63 @@ app.get('/',function(req,res){
 app.get('/registration', function(req,res){
   res.render('registration')
 });
-//redirect to login page after registering by clicking 'register'
-app.post('/register', function(req,res){
-  res.redirect('login')
-});
+
 //handle request for login page after redirection from registration page
 app.get('/login', function(req,res){
   res.render('login')
 });
 
 //go to homepage after logging in by clicking 'login'
-app.post('/', function(req, res){
-  res.render('home')
+app.post('/', async function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  try {
+    // Query MongoDB to verify the user's credentials
+    const user = await customerCollection.findOne({ username: username, password: password });
+
+    if (user) {
+      console.log('Login successful for:', username);
+      res.redirect('/home'); // Redirect to the home page
+    } else {
+      console.log('Invalid credentials for:', username);
+      res.send('<h1>Invalid username or password</h1><a href="/">Try again</a>');
+    }
+  } catch (err) {
+    console.error('Error while logging in:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
+app.post('/register', async function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  try {
+    // Check if the username already exists
+    const existingUser = await customerCollection.findOne({ username: username });
+    if (existingUser) {
+      console.log('Username already taken:', username);
+      res.send(`
+        <h1>Username already exists</h1>
+        <a href="/Registration">Try again</a>
+      `);
+    } else {
+      // Insert the new user into the database
+      await customerCollection.insertOne({ username: username, password: password });
+      console.log('Registration successful for:', username);
+      res.redirect('/home'); // Redirect back to login page after successful registration
+    }
+  } catch (err) {
+    console.error('Error while registering:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 //go to homepage after logging in after registering
-app.post('/login',function(req, res){
-  res.render('home')
-});
+//app.post('/login',function(req, res){
+  //res.render('home')
+//});
 
 //go to wanttogo list after clicking button 'want to go list'
 app.get('/wanttogo', function(req,res){
@@ -119,24 +159,35 @@ console.log(z);//print the parsed data as an object again
 //console.log(x.name);//print to console
 
 //mongoDB connection to database
-const { MongoClient } = require('mongodb');
-const { name } = require('ejs');
-const client = new MongoClient("mongodb://127.0.0.1:27017");
+//const { MongoClient } = require('mongodb');
+//const { name } = require('ejs');
+//const client = new MongoClient("mongodb://127.0.0.1:27017");
+//client.connect();
+//const db = client.db('MyDB');
+//db.collection('myCollection').insertOne({username: "test", password: "test"});
+//db.collection('myCollection').insertOne({username: "ali1919", password: "abc123"});
+//var l = {username: "ali1919", password: "abc123"};
+//var m = JSON.stringify(l);
+//fs.writeFileSync("users.json",m);
+
+var { MongoClient } = require('mongodb');
+var client = new MongoClient("mongodb://127.0.0.1:27017");
 client.connect();
-const db = client.db('MyDB');
-db.collection('myCollection').insertOne({username: "test", password: "test"});
-db.collection('myCollection').insertOne({username: "ali1919", password: "abc123"});
-var l = {username: "ali1919", password: "abc123"};
-var m = JSON.stringify(l);
-fs.writeFileSync("users.json",m);
- 
+var db = client.db('MyDB');
+var customerCollection = db.collection('myCollection');
+//comment test users after the first run 
+customerCollection.insertMany([
+  { username: "test", password: "test" },
+  { username: "ali1919", password: "abc123" },
+  { username: "layla", password: "pass" }
+]);
 //access
 // db.collection('myCollection').find().toArray(function(err,results){
 //   console.log(results)
 // });
-db.collection('myCollection').findOne({username: "test"}).then(result => {
-  console.log(result.username)
-  }); 
+//db.collection('myCollection').findOne({username: "test"}).then(result => {
+  //console.log(result.username)
+  //}); 
 
 // GET route for destination pages
 app.get('/destination/:name', async (req, res) => {
