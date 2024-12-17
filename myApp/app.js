@@ -2,7 +2,6 @@
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
-var alert = require('alert');
 var app = express();//initiation of the express server
 
 // view engine setup
@@ -63,7 +62,9 @@ app.post('/', async function(req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
-
+app.get('/home', function(req,res){
+  res.render('home')
+});
 app.post('/register', async function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
