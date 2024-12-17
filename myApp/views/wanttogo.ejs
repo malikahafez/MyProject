@@ -38,5 +38,14 @@
             </form>
         </div>
     </nav>
+    <div>
+    <ul>
+        <% wanttogolist.forEach(function(location) { %>
+          <li style="color:white">
+            <%= location %>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
 </body>
 </html>

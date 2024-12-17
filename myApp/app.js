@@ -15,11 +15,20 @@ app.use(express.static(path.join(__dirname, 'public')));//setting folder for sta
 app.use(session({
   secret: 'secret',
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
+  saveUninitialized: false
 }));
 
 // app.get('/',function(req, res){
+
+function isAuthenticated(req, res, next) {
+  if (req.session.username) {
+    next();
+  } else {
+    res.redirect('/'); // Redirect to login if not logged in
+  }
+}
+
+
 //   res.render('index', {title: "express"})
 // });
 
@@ -58,7 +67,7 @@ app.post('/', async function(req, res) {
 
     if (user) {
       console.log('Login successful for:', username);
-      req.session.userId = user.username;
+      req.session.username = username; // Store username in session
       res.redirect('/home'); // Redirect to the home page
     } else {
       console.log('Invalid credentials for:', username);
@@ -70,9 +79,10 @@ app.post('/', async function(req, res) {
   }
 });
 
-app.get('/home', function(req,res){
+app.get('/home', isAuthenticated, function(req,res){
   res.render('home');
-  console.log(req.session.userId);
+  
+  console.log(req.session.username);
 });
 app.post('/register', async function(req, res) {
   var username = req.body.username;
@@ -123,44 +133,54 @@ app.post('/register', async function(req, res) {
 //});
 
 //go to wanttogo list after clicking button 'want to go list'
-app.get('/wanttogo', function(req,res){
-  res.render('wanttogo')
+app.get('/wanttogo',isAuthenticated, async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
+
 //go to islands page after clicking button 'view'
-app.get('/islands', function(req,res){
+app.get('/islands',isAuthenticated, function(req,res){
   res.render('islands')
 });
 //go to bali page after clicking 'view'
-app.get('/bali', function(req,res){
+app.get('/bali',isAuthenticated, function(req,res){
   res.render('bali')
 });
 //go to santorini page after clicking 'view'
-app.get('/santorini', function(req,res){
+app.get('/santorini',isAuthenticated, function(req,res){
   res.render('santorini')
 });
 //go to cities page after clicking 'view'
-app.get('/cities', function(req,res){
+app.get('/cities',isAuthenticated, function(req,res){
   res.render('cities')
 });
 //go to paris page after clicking 'view'
-app.get('/paris', function(req, res){
+app.get('/paris',isAuthenticated, function(req, res){
   res.render('paris')
 });
 //go to rome page after clicking 'view'
-app.get('/rome', function(req, res){
+app.get('/rome',isAuthenticated, function(req, res){
   res.render('rome')
 });
 //go to hiking page after clicking 'view'
-app.get('/hiking', function(req,res){
+app.get('/hiking',isAuthenticated, function(req,res){
   res.render('hiking')
 });
 //go to inca page after clicking 'view'
-app.get('/inca', function(req,res){
+app.get('/inca',isAuthenticated, function(req,res){
   res.render('inca')
 });
 //go to annapurna page after clicking 'view'
-app.get('/annapurna', function(req,res){
+app.get('/annapurna',isAuthenticated, function(req,res){
   res.render('annapurna')
 });
 // app.post('/search', function(req,res){
@@ -324,7 +344,7 @@ const availableLocations = [{ id: 1, name: "santorini" },
 ];
 
 // Lookup Route
-app.post("/search", (req, res) => {
+app.post("/search",isAuthenticated, (req, res) => {
  
   const searchTerm = req.body.Search;
   console.log(searchTerm);
