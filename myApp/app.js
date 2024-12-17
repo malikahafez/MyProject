@@ -23,24 +23,85 @@ app.get('/registration', function (req, res) {
     res.render('registration');
 });
 
-// Redirect to login page after registering
-app.post('/register', function (req, res) {
-    res.redirect('login');
+
+=======
+//handle request for login page after redirection from registration page
+app.get('/login', function(req,res){
+  res.render('login')
 });
 
-// Handle request for login page after redirection
-app.get('/login', function (req, res) {
-    res.render('login');
-});
+//go to homepage after logging in by clicking 'login'
+app.post('/', async function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
 
-// Go to homepage after logging in
-app.post('/', function (req, res) {
-    res.render('home');
+  try {
+    // Query MongoDB to verify the user's credentials
+    const user = await customerCollection.findOne({ username: username, password: password });
+
+    if (user) {
+      console.log('Login successful for:', username);
+      res.redirect('/home'); // Redirect to the home page
+    } else {
+      console.log('Invalid credentials for:', username);
+      res.send('<h1>Invalid username or password</h1><a href="/">Try again</a>');
+    }
+  } catch (err) {
+    console.error('Error while logging in:', err);
+    res.status(500).send('Internal Server Error');
+  }
+
 });
-//go to homepage after logging in after registering
-app.post('/login',function(req, res){
+app.get('/home', function(req,res){
   res.render('home')
 });
+app.post('/register', async function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  try {
+    
+    // Check if the username already exists
+    const existingUser = await customerCollection.findOne({ username: username });
+    
+    if (existingUser) {
+      console.log('Username already taken:', username);
+      res.send(`
+        <h1>Username already exists</h1>
+        <body>The username you entered is taken<body>
+        <br><br>
+        <a href="/Registration">Try again</a>
+      `);
+    } 
+    else if(username == "" || password == ""){
+      console.log('fields left empty');
+      res.send(`
+        <h1>Username or Password left empty</h1>
+        <body> You left the username or the password fields empty<body>
+        <br><br>
+        <a href="/Registration">Try again</a>
+      `);
+    }
+    else {
+      // Insert the new user into the database
+      await customerCollection.insertOne({ username: username, password: password });
+      console.log('Registration successful for:', username);
+      res.send(`<h1>Registration successful</h1>
+         <a href="/">ok</a>
+        `);// Redirect back to login page after successful registration
+      
+      //res.redirect('/'); 
+    }
+  } catch (err) {
+    console.error('Error while registering:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+//go to homepage after logging in after registering
+//app.post('/login',function(req, res){
+  //res.render('home')
+//});
 
 //go to wanttogo list after clicking button 'want to go list'
 app.get('/wanttogo', function(req,res){
@@ -101,13 +162,47 @@ console.log(x);
 console.log(y);
 console.log(z);
 
-// MongoDB Connection
-const { MongoClient } = require('mongodb');
-const { name } = require('ejs');
-const client = new MongoClient("mongodb://127.0.0.1:27017");
+
+=======
+
+console.log(x);//print x as an object can't write this into a file
+//console.log(x.name);//print to console
+
+
+//const { MongoClient } = require('mongodb');
+//const { name } = require('ejs');
+//const client = new MongoClient("mongodb://127.0.0.1:27017");
+//client.connect();
+//const db = client.db('MyDB');
+//db.collection('myCollection').insertOne({username: "test", password: "test"});
+//db.collection('myCollection').insertOne({username: "ali1919", password: "abc123"});
+//var l = {username: "ali1919", password: "abc123"};
+//var m = JSON.stringify(l);
+//fs.writeFileSync("users.json",m);
+console.log(y);//print x in JSON format (one big string) can write this into a file
+console.log(z);//print the parsed data as an object again
+
+
+//mongoDB connection to database
+var { MongoClient } = require('mongodb');
+var client = new MongoClient("mongodb://127.0.0.1:27017");
 client.connect();
-const db = client.db('MyDB');
-db.collection('myCollection').insertOne({ username: "test", password: "test" });
+var db = client.db('MyDB');
+var customerCollection = db.collection('myCollection');
+//comment test users after the first run 
+customerCollection.insertMany([
+  { username: "test", password: "test" },
+  { username: "ali1919", password: "abc123" },
+  { username: "layla", password: "pass" }
+]);
+//access
+// db.collection('myCollection').find().toArray(function(err,results){
+//   console.log(results)
+// });
+//db.collection('myCollection').findOne({username: "test"}).then(result => {
+  //console.log(result.username)
+  //}); 
+
 
 db.collection('myCollection').findOne({ username: "test" }).then(result => {
     console.log(result.username);
@@ -198,6 +293,7 @@ app.post('/destination/add', async (req, res) => {
       res.send("Destination added successfully!");
     }
   } catch (err) {
+    console.error(err.message);
     res.status(500).send("Error adding to the Want-to-Go List.");
   }
 });
@@ -221,6 +317,39 @@ const destinations = {
     video: "https://www.youtube.com/embed/CBwKJfrm5-U"
   }
 };
+
+
+=======
+const availableLocations = [{ id: 1, name: "santorini" },
+{ id: 2, name: "bali" },
+{ id: 3, name: "paris" },
+{ id: 4, name: "rome" },
+{ id: 5, name: "annapurna" },
+{ id: 6, name: "inca" },
+
+];
+
+// Lookup Route
+app.post("/search", (req, res) => {
+ 
+  const searchTerm = req.body.Search;
+  console.log(searchTerm);
+  try {
+    // Execute a case-insensitive lookup in the availableLocations array
+    const filteredLocations = availableLocations.filter((location) =>
+      location.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    res.render("searchresults", {
+      message: filteredLocations.length > 0 ? null : "No matching destinations found",
+      locations: filteredLocations,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+  
+});
 
 app.listen(3000);//port number 3000 for the website
 //tell app server to listen for all requests from the local host on port 3000
