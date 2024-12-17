@@ -174,11 +174,9 @@ var z = JSON.parse(data);
 
 
 console.log(x);//print x as an object can't write this into a file
-console.log(y);//print x in JSON format (one big string) can write this into a file
-console.log(z);//print the parsed data as an object again
 //console.log(x.name);//print to console
 
-//mongoDB connection to database
+
 //const { MongoClient } = require('mongodb');
 //const { name } = require('ejs');
 //const client = new MongoClient("mongodb://127.0.0.1:27017");
@@ -189,7 +187,11 @@ console.log(z);//print the parsed data as an object again
 //var l = {username: "ali1919", password: "abc123"};
 //var m = JSON.stringify(l);
 //fs.writeFileSync("users.json",m);
+console.log(y);//print x in JSON format (one big string) can write this into a file
+console.log(z);//print the parsed data as an object again
 
+
+//mongoDB connection to database
 var { MongoClient } = require('mongodb');
 var client = new MongoClient("mongodb://127.0.0.1:27017");
 client.connect();
