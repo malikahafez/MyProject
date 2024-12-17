@@ -78,19 +78,27 @@ app.post('/register', async function(req, res) {
       console.log('Username already taken:', username);
       res.send(`
         <h1>Username already exists</h1>
+        <body>The username you entered is taken<body>
+        <br><br>
         <a href="/Registration">Try again</a>
       `);
     } 
     else if(username == "" || password == "")
       res.send(`
         <h1>Username or Password left empty</h1>
+        <body> You left the username or the password fields empty<body>
+        <br><br>
         <a href="/Registration">Try again</a>
       `);
     else {
       // Insert the new user into the database
       await customerCollection.insertOne({ username: username, password: password });
       console.log('Registration successful for:', username);
-      res.redirect('/'); // Redirect back to login page after successful registration
+      res.send(`<h1>Registration successful</h1>
+         <a href="/">ok</a>
+        `);// Redirect back to login page after successful registration
+      
+      //res.redirect('/'); 
     }
   } catch (err) {
     console.error('Error while registering:', err);
