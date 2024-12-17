@@ -156,7 +156,7 @@ app.get('/bali',isAuthenticated, function(req,res){
   res.render('bali')
 });
 //add bali to wanttogo list
-app.post('/bali',async function(req,res){
+app.post('/bali',isAuthenticated,async function(req,res){
   const username = req.session.username;
 
   try {
@@ -169,7 +169,21 @@ app.post('/bali',async function(req,res){
         <a href="/bali">ok</a>
       `);
     }
+    else{
     user.wanttogolist.push('bali');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
     //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
     console.log(user.wanttogolist);
   } catch (err) {
