@@ -18,8 +18,6 @@ app.use(session({
   saveUninitialized: false
 }));
 
-// app.get('/',function(req, res){
-
 function isAuthenticated(req, res, next) {
   if (req.session.username) {
     next();
@@ -28,20 +26,6 @@ function isAuthenticated(req, res, next) {
   }
 }
 
-
-//   res.render('index', {title: "express"})
-// });
-
-// app.get('/pizza',function(req,res){
-//   res.render('pizzaPage',{ppp:"pizza"})
-// });
-
-// app.post('/pizza',function(req,res){
-//   var x = req.body.user;
-//   var y = req.body.pass;
-//   console.log(x);
-//   console.log(y);
-// });
 //show login page when localhost:3000 is in browser
 app.get('/',function(req,res){
   res.render('login')
