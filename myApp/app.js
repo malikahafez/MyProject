@@ -70,15 +70,23 @@ app.post('/register', async function(req, res) {
   var password = req.body.password;
 
   try {
+    
     // Check if the username already exists
     const existingUser = await customerCollection.findOne({ username: username });
+    
     if (existingUser) {
       console.log('Username already taken:', username);
       res.send(`
         <h1>Username already exists</h1>
         <a href="/Registration">Try again</a>
       `);
-    } else {
+    } 
+    else if(username == "" || password == "")
+      res.send(`
+        <h1>Username or Password left empty</h1>
+        <a href="/Registration">Try again</a>
+      `);
+    else {
       // Insert the new user into the database
       await customerCollection.insertOne({ username: username, password: password });
       console.log('Registration successful for:', username);
