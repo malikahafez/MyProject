@@ -1,5 +1,6 @@
 
 var express = require('express');
+const session = require('express-session');
 var path = require('path');
 var fs = require('fs');
 var app = express();//initiation of the express server
@@ -11,9 +12,23 @@ app.set('view engine', 'ejs');//tell engine to handle the views as ejs files not
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));//setting folder for static files(videos, images, ...)
-
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false
+}));
 
 // app.get('/',function(req, res){
+
+function isAuthenticated(req, res, next) {
+  if (req.session.username) {
+    next();
+  } else {
+    res.redirect('/'); // Redirect to login if not logged in
+  }
+}
+
+
 //   res.render('index', {title: "express"})
 // });
 
@@ -52,6 +67,7 @@ app.post('/', async function(req, res) {
 
     if (user) {
       console.log('Login successful for:', username);
+      req.session.username = username; // Store username in session
       res.redirect('/home'); // Redirect to the home page
     } else {
       console.log('Invalid credentials for:', username);
@@ -62,8 +78,11 @@ app.post('/', async function(req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
-app.get('/home', function(req,res){
-  res.render('home')
+
+app.get('/home', isAuthenticated, function(req,res){
+  res.render('home');
+  
+  console.log(req.session.username);
 });
 app.post('/register', async function(req, res) {
   var username = req.body.username;
@@ -114,45 +133,271 @@ app.post('/register', async function(req, res) {
 //});
 
 //go to wanttogo list after clicking button 'want to go list'
-app.get('/wanttogo', function(req,res){
-  res.render('wanttogo')
+app.get('/wanttogo',isAuthenticated, async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
+
 //go to islands page after clicking button 'view'
-app.get('/islands', function(req,res){
+app.get('/islands',isAuthenticated, function(req,res){
   res.render('islands')
 });
 //go to bali page after clicking 'view'
-app.get('/bali', function(req,res){
+app.get('/bali',isAuthenticated, function(req,res){
   res.render('bali')
 });
+//add bali to wanttogo list
+app.post('/bali',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('bali')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/bali">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('bali');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 //go to santorini page after clicking 'view'
-app.get('/santorini', function(req,res){
+app.get('/santorini',isAuthenticated, function(req,res){
   res.render('santorini')
 });
+//add santorini to wanttogo list
+app.post('/santorini',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('santorini')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/santorini">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('santorini');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 //go to cities page after clicking 'view'
-app.get('/cities', function(req,res){
+app.get('/cities',isAuthenticated, function(req,res){
   res.render('cities')
 });
 //go to paris page after clicking 'view'
-app.get('/paris', function(req, res){
+app.get('/paris',isAuthenticated, function(req, res){
   res.render('paris')
 });
+//add paris to wanttogo list
+app.post('/paris',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('paris')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/paris">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('paris');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 //go to rome page after clicking 'view'
-app.get('/rome', function(req, res){
+app.get('/rome',isAuthenticated, function(req, res){
   res.render('rome')
 });
+//add rome to wanttogo list
+app.post('/rome',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('rome')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/rome">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('rome');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 //go to hiking page after clicking 'view'
-app.get('/hiking', function(req,res){
+app.get('/hiking',isAuthenticated, function(req,res){
   res.render('hiking')
 });
 //go to inca page after clicking 'view'
-app.get('/inca', function(req,res){
+app.get('/inca',isAuthenticated, function(req,res){
   res.render('inca')
 });
+//add inca to wanttogo list
+app.post('/inca',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('inca')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/inca">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('inca');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 //go to annapurna page after clicking 'view'
-app.get('/annapurna', function(req,res){
+app.get('/annapurna',isAuthenticated, function(req,res){
   res.render('annapurna')
+});
+//add annapurna to wanttogo list
+app.post('/annapurna',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('annapurna')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/annapurna">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('annapurna');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 // app.post('/search', function(req,res){
 //   res.render('searchresults')
@@ -211,99 +456,6 @@ customerCollection.insertMany([
 //   console.log(result.username)
 //   }); 
 
-// GET route for destination pages
-app.get('/destination/:name', async (req, res) => {
-  const destinationName = req.params.name;
-
-  // Example video links and descriptions for each destination
-const destinations = {
-  santorini: { 
-    description: "Beautiful island in Greece.", 
-    video: "https://www.youtube.com/embed/UO6HZLdN-Ls" 
-  },
-  rome: { 
-    description: "The capital of Italy, full of history.", 
-    video: "https://www.youtube.com/embed/5DcA4BePBdA" 
-  },
-  paris: { 
-    description: "City of Love in France.", 
-    video: "https://www.youtube.com/embed/GljTvdEDqJM" 
-  },
-  bali: { 
-    description: "A tropical paradise with stunning beaches and culture.", 
-    video: "https://www.youtube.com/embed/CBwKJfrm5-U" 
-  },
-  annapurna: {
-    description: "A scenic city in Nepal.",
-    video: "https://www.youtube.com/embed/y9sJIOetf4g"
-  },
-  inca: {
-    description: "Discover the ancient city.",
-    video: "https://www.youtube.com/embed/N50PhJ4Pr1Q"
-  }
-};
-
-
-
-  // Check if destination exists
-  if (destinations[destinationName]) {
-    res.render('destination', { 
-      name: destinationName, 
-      description: destinations[destinationName].description, 
-      videoLink: destinations[destinationName].video 
-    });
-  } else {
-    res.status(404).send("Destination not found");
-  }
-});
-
-// POST route to add a destination to "Want-to-Go List"
-app.post('/destination/add', async (req, res) => {
-  const { destination } = req.body;
-
-  try {
-    // Check if the destination already exists in the user's list
-    const existing = await usersCollection.findOne({
-      username: currentUser.username, 
-      wantToGoList: destination
-    });
-
-    if (existing) {
-      res.send("Destination already in your Want-to-Go List!");
-    } else {
-      // Add destination to the user's list
-      await usersCollection.updateOne(
-        { username: currentUser.username },
-        { $push: { wantToGoList: destination } },
-        { upsert: true }
-      );
-      res.send("Destination added successfully!");
-    }
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Error adding to the Want-to-Go List.");
-  }
-});
-
-
-const destinations = {
-  santorini: { 
-    description: "Beautiful island in Greece.", 
-    video: "https://www.youtube.com/embed/UO6HZLdN-Ls" 
-  },
-  rome: { 
-    description: "The capital of Italy, full of history.", 
-    video: "https://www.youtube.com/embed/5DcA4BePBdA" 
-  },
-  paris: { 
-    description: "City of Love in France.", 
-    video: "https://www.youtube.com/embed/GljTvdEDqJM" 
-  },
-  bali: {
-    description: "A tropical paradise with stunning beaches and culture.", 
-    video: "https://www.youtube.com/embed/CBwKJfrm5-U"
-  }
-};
 
 const availableLocations = [{ id: 1, name: "santorini" },
 { id: 2, name: "bali" },
@@ -314,8 +466,8 @@ const availableLocations = [{ id: 1, name: "santorini" },
 
 ];
 
-// Lookup Route
-app.post("/search", (req, res) => {
+// Search Route
+app.post("/search",isAuthenticated, (req, res) => {
  
   const searchTerm = req.body.Search;
   console.log(searchTerm);
