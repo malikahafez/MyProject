@@ -143,9 +143,9 @@ app.get('/inca', function(req,res){
 app.get('/annapurna', function(req,res){
   res.render('annapurna')
 });
-app.post('/search', function(req,res){
-  res.render('searchresults')
-});
+// app.post('/search', function(req,res){
+//   res.render('searchresults')
+// });
 //javascript object notation(json)
 //var var_name = {variable:value, variable:value};
 //object can have multiple data types within it
