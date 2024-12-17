@@ -207,9 +207,9 @@ customerCollection.insertMany([
 // db.collection('myCollection').find().toArray(function(err,results){
 //   console.log(results)
 // });
-db.collection('myCollection').findOne({username: "test"}).then(result => {
-  console.log(result.username)
-  }); 
+// db.collection('myCollection').findOne({username: "test"}).then(result => {
+//   console.log(result.username)
+//   }); 
 
 // GET route for destination pages
 app.get('/destination/:name', async (req, res) => {
