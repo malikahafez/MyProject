@@ -243,6 +243,42 @@ app.post('/paris',isAuthenticated,async function(req,res){
 app.get('/rome',isAuthenticated, function(req, res){
   res.render('rome')
 });
+//add rome to wanttogo list
+app.post('/rome',isAuthenticated,async function(req,res){
+  const username = req.session.username;
+
+  try {
+    const user = await customerCollection.findOne({ username: username });
+    if(user.wanttogolist.includes('rome')){
+      res.send(`
+        <h1>Destination already exists in your Want-to-Go List</h1>
+        <body>You can try adding another destination<body>
+        <br><br>
+        <a href="/rome">ok</a>
+      `);
+    }
+    else{
+    user.wanttogolist.push('rome');
+    db.collection('myCollection').updateOne(
+      {username:user.username},
+      {$set:{wanttogolist:user.wanttogolist}}, 
+      function(err, result){
+      if(err)throw err;
+    });  
+    res.send(`
+      <h1>Destination successfully added to your Want-to-Go List</h1>
+      <body><body>
+      <br><br>
+      <a href="/home">ok</a>
+    `);
+    }
+    //res.render('wanttogo', { username: username, wanttogolist: user.wanttogolist });
+    console.log(user.wanttogolist);
+  } catch (err) {
+    console.error('Error fetching Want-to-Go List:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 //go to hiking page after clicking 'view'
 app.get('/hiking',isAuthenticated, function(req,res){
   res.render('hiking')
