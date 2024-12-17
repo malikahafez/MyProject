@@ -24,7 +24,6 @@ app.get('/registration', function (req, res) {
 });
 
 
-=======
 //handle request for login page after redirection from registration page
 app.get('/login', function(req,res){
   res.render('login')
@@ -144,9 +143,9 @@ app.get('/inca', function(req,res){
 app.get('/annapurna', function(req,res){
   res.render('annapurna')
 });
-app.post('/search', function(req,res){
-  res.render('searchresults')
-});
+// app.post('/search', function(req,res){
+//   res.render('searchresults')
+// });
 //javascript object notation(json)
 //var var_name = {variable:value, variable:value};
 //object can have multiple data types within it
@@ -162,10 +161,7 @@ console.log(x);
 console.log(y);
 console.log(z);
 
-
-=======
-
-console.log(x);//print x as an object can't write this into a file
+//console.log(x);//print x as an object can't write this into a file
 //console.log(x.name);//print to console
 
 
@@ -179,8 +175,8 @@ console.log(x);//print x as an object can't write this into a file
 //var l = {username: "ali1919", password: "abc123"};
 //var m = JSON.stringify(l);
 //fs.writeFileSync("users.json",m);
-console.log(y);//print x in JSON format (one big string) can write this into a file
-console.log(z);//print the parsed data as an object again
+//console.log(y);//print x in JSON format (one big string) can write this into a file
+//console.log(z);//print the parsed data as an object again
 
 
 //mongoDB connection to database
@@ -207,9 +203,6 @@ customerCollection.insertMany([
 db.collection('myCollection').findOne({ username: "test" }).then(result => {
     console.log(result.username);
 });
-
-
-
 
 // Route to add a destination to the Want-to-Go List
 app.post('/destination/add', (req, res) => {
@@ -318,8 +311,6 @@ const destinations = {
   }
 };
 
-
-=======
 const availableLocations = [{ id: 1, name: "santorini" },
 { id: 2, name: "bali" },
 { id: 3, name: "paris" },
