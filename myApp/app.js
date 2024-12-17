@@ -94,7 +94,7 @@ app.post('/register', async function(req, res) {
     }
     else {
       // Insert the new user into the database
-      await customerCollection.insertOne({ username: username, password: password });
+      await customerCollection.insertOne({ username: username, password: password, wanttogolist:[] });
       console.log('Registration successful for:', username);
       res.send(`<h1>Registration successful</h1>
          <a href="/">ok</a>
