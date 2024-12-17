@@ -83,13 +83,15 @@ app.post('/register', async function(req, res) {
         <a href="/Registration">Try again</a>
       `);
     } 
-    else if(username == "" || password == "")
+    else if(username == "" || password == ""){
+      console.log('fields left empty');
       res.send(`
         <h1>Username or Password left empty</h1>
         <body> You left the username or the password fields empty<body>
         <br><br>
         <a href="/Registration">Try again</a>
       `);
+    }
     else {
       // Insert the new user into the database
       await customerCollection.insertOne({ username: username, password: password });
