@@ -199,17 +199,17 @@ var db = client.db('MyDB');
 var customerCollection = db.collection('myCollection');
 //comment test users after the first run 
 customerCollection.insertMany([
-  { username: "test", password: "test" },
-  { username: "ali1919", password: "abc123" },
-  { username: "layla", password: "pass" }
+  { username: "test", password: "test", wanttogolist:['santorini','paris'] },
+  { username: "ali1919", password: "abc123",wanttogolist:['bali']  },
+  { username: "layla", password: "pass", wanttogolist:['annapurna'] }
 ]);
 //access
 // db.collection('myCollection').find().toArray(function(err,results){
 //   console.log(results)
 // });
-//db.collection('myCollection').findOne({username: "test"}).then(result => {
-  //console.log(result.username)
-  //}); 
+db.collection('myCollection').findOne({username: "test"}).then(result => {
+  console.log(result.username)
+  }); 
 
 // GET route for destination pages
 app.get('/destination/:name', async (req, res) => {
