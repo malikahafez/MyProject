@@ -150,7 +150,7 @@ app.post('/bali',isAuthenticated,async function(req,res){
         <h1>Destination already exists in your Want-to-Go List</h1>
         <body>You can try adding another destination<body>
         <br><br>
-        <a href="/bali">ok</a>
+        <a href="/home">ok</a>
       `);
     }
     else{
@@ -190,7 +190,7 @@ app.post('/santorini',isAuthenticated,async function(req,res){
         <h1>Destination already exists in your Want-to-Go List</h1>
         <body>You can try adding another destination<body>
         <br><br>
-        <a href="/santorini">ok</a>
+        <a href="/home">ok</a>
       `);
     }
     else{
@@ -234,7 +234,7 @@ app.post('/paris',isAuthenticated,async function(req,res){
         <h1>Destination already exists in your Want-to-Go List</h1>
         <body>You can try adding another destination<body>
         <br><br>
-        <a href="/paris">ok</a>
+        <a href="/home">ok</a>
       `);
     }
     else{
@@ -274,7 +274,7 @@ app.post('/rome',isAuthenticated,async function(req,res){
         <h1>Destination already exists in your Want-to-Go List</h1>
         <body>You can try adding another destination<body>
         <br><br>
-        <a href="/rome">ok</a>
+        <a href="/home">ok</a>
       `);
     }
     else{
@@ -318,7 +318,7 @@ app.post('/inca',isAuthenticated,async function(req,res){
         <h1>Destination already exists in your Want-to-Go List</h1>
         <body>You can try adding another destination<body>
         <br><br>
-        <a href="/inca">ok</a>
+        <a href="/home">ok</a>
       `);
     }
     else{
@@ -358,7 +358,7 @@ app.post('/annapurna',isAuthenticated,async function(req,res){
         <h1>Destination already exists in your Want-to-Go List</h1>
         <body>You can try adding another destination<body>
         <br><br>
-        <a href="/annapurna">ok</a>
+        <a href="/home">ok</a>
       `);
     }
     else{
